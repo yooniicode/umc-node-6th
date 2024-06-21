@@ -1,7 +1,7 @@
 import { BaseError } from "../../config/error.js";
 import { status } from "../../config/response.status.js";
-import { signinResponseDTO } from "../dtos/user.dto.js";
-import { addUser, getUser, getUserPreferToUserID, setPrefer } from "../models/user.dao.js";
+import { signinResponseDTO, previewReviewResponseDTO, missionResponseDTO } from "../dtos/user.dto.js";
+import { addUser, getUser, getUserPreferToUserID, setPrefer, getUserPreviewReview, getUserActiveMissions } from "../models/user.dao.js";
 
 export const joinUser = async (body) => {
     const birth = new Date(body.birthYear, body.birthMonth, body.birthDay);
@@ -35,3 +35,14 @@ export const signInUser = async (userData) => {
     }
     throw new Error('Invalid credentials');
 };
+
+const getUserReviews = async (userId, query) => {
+    const { cursorId, size = 3 } = query;
+    const data = await getUserPreviewReview(userId, size, cursorId);
+    return previewReviewResponseDTO(data);
+}
+
+const getUserMissions = async (userId) => {
+    const data = await getUserActiveMissions(userId);
+    return missionResponseDTO(data);
+}

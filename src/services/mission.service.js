@@ -10,3 +10,8 @@ export const getMissionById = async (id) => {
     const [rows] = await pool.query('SELECT * FROM missions WHERE id = ?', [id]);
     return rows[0];
 };
+
+const completeUserMission = async (missionId) => {
+    const data = await updateMissionCompleteStatus(missionId);
+    return missionCompleteResponseDTO(data);
+}

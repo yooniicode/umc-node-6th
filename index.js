@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import SwaggerUi from 'swagger-ui-express';
 import { specs } from './config/swagger.config.js';
 
+import tempRouter from './src/routes/temp.routes.js';
 import userRouter from './src/routes/user.route.js';
 import storeRouter from './src/routes/store.route.js';
 import reviewRouter from './src/routes/review.routes.js';
@@ -30,6 +31,19 @@ app.use('/review', reviewRouter);
 app.use('/mission', missionRouter);
 app.use('/challenge', challengeRouter);
 app.use('/user', userRouter);
+
+app.use('/temp', tempRouter);
+app.use('/user', userRouter);
+app.use('/:storeId', storeRouter);
+
+pool.getConnection()
+    .then(connection => {
+        console.log('Database connection successful!');
+        connection.release();
+    })
+    .catch(err => {
+        console.error('Database connection failed:', err);
+    });
 
 // 에러 핸들링 미들웨어
 app.use((err, req, res, next) => {

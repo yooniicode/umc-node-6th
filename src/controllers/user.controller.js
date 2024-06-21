@@ -1,6 +1,6 @@
 import { response } from "../../config/response.js";
 import { status } from "../../config/response.status.js";
-import { joinUser, signInUser } from "../services/user.service.js";
+import { joinUser, signInUser, getUserReviews, getUserMissions } from "../services/user.service.js";
 import { CreateUserDto, SignInUserDto } from '../dtos/user.dto.js';
 
 export const userSignin = async (req, res, next) => {
@@ -28,3 +28,19 @@ export const userLogin = async (req, res, next) => {
         res.status(500).json(response(status.INTERNAL_SERVER_ERROR, null));
     }
 };
+
+const userReviewPreview = async (req, res, next) => {
+    const { cursorId, size } = req.query;
+    if (size && isNaN(size)) {
+        return res.status(status.PARAMETER_IS_WRONG.status).send(response(status.PARAMETER_IS_WRONG, null));
+    }
+    const reviews = await getUserReviews(req.params.userId, req.query);
+    return res.send(response(status.SUCCESS, reviews));
+}
+
+const userMissions = async (req, res, next) => {
+    const missions = await getUserMissions(req.params.userId);
+    return res.send(response(status.SUCCESS, missions));
+}
+
+module.exports = { userReviewPreview, userMissions };
